@@ -8,7 +8,7 @@ bool blue;
 int Currentpos;
 void init()
 {
-	//i'm red or blue spheres
+	//who am I?
 	red = false;
 	blue = false;
 	float mystate[12];
