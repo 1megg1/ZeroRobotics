@@ -1,0 +1,117 @@
+//objects position
+float Initialposizion[3];
+float posizion1[3];
+float posizion2[3];
+float debris[3];
+float debris1[3];
+float debris2[3];
+float debris3[3];
+float debris4[3];
+float debrisz[4][3];
+//controlls
+bool red;
+bool blue;
+int Currentpos;
+void init()
+{
+	//which spheres am i
+	red = false;
+	blue = false;
+	float mystate[12];
+	api.getMySphState(mystate);
+	if(mystate[0] < 0)
+	{
+		red = true;
+		Initialposizion[0] = -0.3;
+		Initialposizion[1] = 0.6;
+		Initialposizion[2] = 0;
+	}
+	else
+	{
+		blue = true;
+		Initialposizion[0] = 0.3;
+		Initialposizion[1] = 0.6;
+		Initialposizion[2] = 0;
+	}
+	Currentpos = 0;
+}
+void loop()
+{
+	switch(Currentpos)
+	{
+		case 0:
+				float opponentstate[12];
+				api.getOtherZRState(opponentstate);
+				float point[3];
+				point[0] = opponentstate[0];
+				point[1] = opponentstate[1];
+				point[2] = opponentstate[2];
+				ZRState myState;
+				api.getMyZRState(myState);
+				if ((myState[0] > 0.6) || (myState[0] < -0.6) || (myState[1] > 0.67) || (myState[1] < -0.67) || (myState[2] > 0.5) || (myState[2] < -0.55))
+				{
+					Currentpos = 1;
+				}
+				api.setPositionTarget(point);
+				if(api.getTime() >= 70)
+					Currentpos = 1;
+			break;
+		case 1:
+			if(isCloseTo(Initialposizion))
+				{
+					float velo[3] = {0,0,0};
+					api.setVelocityTarget(velo);
+					DEBUG(("stop"));
+					ZRState state;
+					api.getMyZRState(state);
+					if((state[3] > 0) && (state[3] < 0.1)
+						&& (state[4] > 0) && (state[4] < 0.1)
+						&& (state[5] > 0) && (state[5] < 0.1))
+						Currentpos = 2;
+					
+				}
+				else
+					api.setPositionTarget(Initialposizion);
+			if(api.getTime() > 90)
+						Currentpos = 2;
+			break;
+		case 2:
+			if(api.getTime() > 91)
+			{
+				float state[6];
+				game.getCometState(0,state);
+				float pos[6];
+				game.predictCometState(1,state,pos);
+				if(red == true)
+				{
+					posizion1[0] = pos[0] - 0.2;
+					posizion1[1] = pos[1];
+					posizion1[2] = pos[2] - 0.1;
+				}
+				else
+				{
+					posizion1[0] = pos[0] + 0.2;
+					posizion1[1] = pos[1];
+					posizion1[2] = pos[2] + 0.1;
+				}
+				if (isCloseTo(posizion1))
+				{
+					float velo[3] = {0,0,0};
+				  api.setVelocityTarget(velo);
+					Currentpos = 2;
+				}
+				else
+					api.setPositionTarget(posizion1);
+			}
+			break;
+	}
+}
+bool isCloseTo(float *Coordinates)
+{
+    ZRState MyState;
+		api.getMyZRState(MyState);
+    float distance = (Coordinates[0] - MyState[0])*(Coordinates[0] - MyState[0]) 
+        + (Coordinates[1] - MyState[1])*(Coordinates[1] - MyState[1]) 
+        + (Coordinates[2] - MyState[2])*(Coordinates[2] - MyState[2]);
+    return distance < 0.02;
+}
