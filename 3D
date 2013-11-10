@@ -14,7 +14,7 @@ bool blue;
 int Currentpos;
 void init()
 {
-	//which spheres am i
+	//i'm red or blue spheres
 	red = false;
 	blue = false;
 	float mystate[12];
