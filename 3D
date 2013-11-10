@@ -35,33 +35,34 @@ void loop()
 	{
 		case 0:
 				float opponentstate[12];
-				api.getOtherZRState(opponentstate);
+				api.getOtherZRState(opponentstate); 
 				float point[3];
 				point[0] = opponentstate[0];
 				point[1] = opponentstate[1];
 				point[2] = opponentstate[2];
 				ZRState myState;
 				api.getMyZRState(myState);
+				//If i am near out of bounds i go to the next phase
 				if ((myState[0] > 0.6) || (myState[0] < -0.6) || (myState[1] > 0.67) || (myState[1] < -0.67) || (myState[2] > 0.5) || (myState[2] < -0.55))
 				{
 					Currentpos = 1;
 				}
-				api.setPositionTarget(point);
-				if(api.getTime() >= 70)
+				api.setPositionTarget(point); //I follow the other sphere
+				if(api.getTime() >= 70) //If the time is over 70 I go to the next phase
 					Currentpos = 1;
 			break;
 		case 1:
-			if(isCloseTo(Initialposizion))
+			if(isCloseTo(Initialposizion)) //If i reach Initialposition
 				{
 					float velo[3] = {0,0,0};
-					api.setVelocityTarget(velo);
+					api.setVelocityTarget(velo); //I stop my spheres
 					DEBUG(("stop"));
 					ZRState state;
 					api.getMyZRState(state);
 					if((state[3] > 0) && (state[3] < 0.1)
 						&& (state[4] > 0) && (state[4] < 0.1)
 						&& (state[5] > 0) && (state[5] < 0.1))
-						Currentpos = 2;
+						Currentpos = 2; //If i am at the position i want
 					
 				}
 				else
@@ -70,8 +71,9 @@ void loop()
 						Currentpos = 2;
 			break;
 		case 2:
-			if(api.getTime() > 91)
+			if(api.getTime() > 91) //Last phase
 			{
+				//I follow the comet
 				float state[6];
 				game.getCometState(0,state);
 				float pos[6];
@@ -100,7 +102,7 @@ void loop()
 			break;
 	}
 }
-bool isCloseTo(float *Coordinates)
+bool isCloseTo(float *Coordinates) //Distance from the objects
 {
     ZRState MyState;
 		api.getMyZRState(MyState);
