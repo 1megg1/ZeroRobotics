@@ -2,12 +2,6 @@
 float Initialposizion[3];
 float posizion1[3];
 float posizion2[3];
-float debris[3];
-float debris1[3];
-float debris2[3];
-float debris3[3];
-float debris4[3];
-float debrisz[4][3];
 //controlls
 bool red;
 bool blue;
