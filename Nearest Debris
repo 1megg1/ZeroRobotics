@@ -12,6 +12,8 @@ void init()
 		debrisMatr[i][2] = help[2];
 	}
 }
+
+//It returns the ID of the nearest debris
 int DebrisForDistance()
 {
 	ZRState MyState;
