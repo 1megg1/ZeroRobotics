@@ -1,0 +1,37 @@
+float debrisMatr[16][3];
+float distanceMin;
+
+void init()
+{
+	for(int i=0;i<16;i++)
+	{
+		float help[3];
+		game.getDebrisLocation(i,help);
+		debrisMatr[i][0] = help[0];
+		debrisMatr[i][1] = help[1];
+		debrisMatr[i][2] = help[2];
+	}
+}
+int DebrisForDistance()
+{
+	ZRState MyState;
+  api.getMyZRState(MyState);
+	int index = 0;
+	for(int i=0;i<16;i++)
+	{
+		float distanceHelp;
+		if(game.haveDebris(0,i) == false)
+			distanceHelp = sqrtf((MyState[0]-debrisMatr[i][0])*(MyState[0]-debrisMatr[i][0]) + (MyState[1]-debrisMatr[i][1])*(MyState[1]-debrisMatr[i][1]) + (MyState[2]-debrisMatr[i][2])*(MyState[2]-debrisMatr[i][2]));
+		else
+			distanceHelp = 99;
+		if(i == 0)
+			distanceMin = distanceHelp;
+			
+		if(distanceHelp < distanceMin)
+		{
+			distanceMin = distanceHelp;
+			index = i;
+		}
+	}
+	return index;
+}
